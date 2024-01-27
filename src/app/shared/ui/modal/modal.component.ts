@@ -1,6 +1,6 @@
-import {Component, ContentChild, inject, Input, TemplateRef} from '@angular/core';
-import {Dialog} from "@angular/cdk/dialog";
-import {FormModalComponent} from "../form-modal/form-modal.component";
+import { Component, ContentChild, inject, Input, TemplateRef } from '@angular/core';
+import { Dialog } from "@angular/cdk/dialog";
+import { FormModalComponent } from "../form-modal/form-modal.component";
 
 @Component({
   selector: 'app-modal',
@@ -18,7 +18,7 @@ export class ModalComponent {
 
   @Input() set isOpen(value: boolean) {
     if (value) {
-      this.dialog.open(this.template, { panelClass: ['shadow', 'p-8', 'rounded-xl', 'border'] });
+      this.dialog.open(this.template, { panelClass: 'dialog-container' });
     } else {
       this.dialog.closeAll();
     }

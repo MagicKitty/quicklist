@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Checklist} from "../../../shared/models/checklist";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Checklist, RemoveChecklist} from "../../../shared/models/checklist";
 import {RouterLink} from "@angular/router";
 
 @Component({
@@ -10,10 +10,14 @@ import {RouterLink} from "@angular/router";
     <ul>
       @for (checklist of checklists; track checklist.id){
         <li>
-          <a class="underline" routerLink="/checklist/{{ checklist.id }}">
-            {{ checklist.title }}
-          </a>
-        </li>
+        <a routerLink="/checklist/{{ checklist.id }}">
+          {{ checklist.title }}
+        </a>
+        <div>
+          <button (click)="edit.emit(checklist)">Edit</button>
+          <button (click)="delete.emit(checklist.id)">Delete</button>
+        </div>
+      </li>
       } @empty {
         <p>Click the add button to create your first checklist!</p>
       }
@@ -23,4 +27,6 @@ import {RouterLink} from "@angular/router";
 })
 export class ChecklistListComponent {
   @Input({required: true}) checklists!: Checklist[];
+  @Output() delete = new EventEmitter<RemoveChecklist>();
+  @Output() edit = new EventEmitter<Checklist>();
 }

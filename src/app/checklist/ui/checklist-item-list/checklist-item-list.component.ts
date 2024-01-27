@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ChecklistItem, RemoveChecklistItem} from "../../../shared/models/checklist-item";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChecklistItem, RemoveChecklistItem } from "../../../shared/models/checklist-item";
 
 
 @Component({
@@ -17,8 +17,10 @@ import {ChecklistItem, RemoveChecklistItem} from "../../../shared/models/checkli
               {{ item.title }}
             </div>
             <div>
-              <button (click)="toggle.emit(item.id)">Toggle</button>
-            </div>
+    <button (click)="toggle.emit(item.id)">Toggle</button>
+    <button (click)="edit.emit(item)">Edit</button>
+    <button (click)="delete.emit(item.id)">Delete</button>
+  </div>
           </li>
         } @empty {
           <div>
@@ -27,10 +29,14 @@ import {ChecklistItem, RemoveChecklistItem} from "../../../shared/models/checkli
           </div>
         }
       </ul>
+      <div>{{checkedItems}}/{{checklistItems.length}} complete</div>
     </section>
   `,
 })
 export class ChecklistItemListComponent {
   @Input({ required: true }) checklistItems!: ChecklistItem[];
+  @Input({ required: true }) checkedItems!: number;
   @Output() toggle = new EventEmitter<RemoveChecklistItem>();
+  @Output() delete = new EventEmitter<RemoveChecklistItem>();
+  @Output() edit = new EventEmitter<ChecklistItem>();
 }
