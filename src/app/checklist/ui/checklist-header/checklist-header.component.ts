@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {RouterLink} from "@angular/router";
-import {Checklist, RemoveChecklist} from "../../../shared/models/checklist";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Checklist, RemoveChecklist } from '../../../shared/models/checklist';
 
 @Component({
   standalone: true,
@@ -20,7 +20,7 @@ import {Checklist, RemoveChecklist} from "../../../shared/models/checklist";
   imports: [RouterLink],
 })
 export class ChecklistHeaderComponent {
-  @Input({required: true}) checklist!: Checklist;
+  @Input({ required: true }) checklist!: Checklist;
   @Output() addItem = new EventEmitter<void>();
   @Output() resetChecklist = new EventEmitter<RemoveChecklist>();
 }

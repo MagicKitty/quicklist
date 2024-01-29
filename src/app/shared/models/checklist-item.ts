@@ -1,11 +1,11 @@
-import {RemoveChecklist} from './checklist';
+import { RemoveChecklist } from './checklist';
 
 export type ChecklistItem = {
   id: string;
   checklistId: string;
   title: string;
   checked: boolean;
-}
+};
 
 export type AddChecklistItem = {
   item: Omit<ChecklistItem, 'id' | 'checklistId' | 'checked'>;

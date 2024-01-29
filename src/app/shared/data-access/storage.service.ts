@@ -3,17 +3,12 @@ import { of } from 'rxjs';
 import { Checklist } from '../models/checklist';
 import { ChecklistItem } from '../models/checklist-item';
 
-export const LOCAL_STORAGE = new InjectionToken<Storage>(
-  'window local storage object',
-  {
-    providedIn: 'root',
-    factory: () => {
-      return inject(PLATFORM_ID) === 'browser'
-        ? window.localStorage
-        : ({} as Storage);
-    },
-  }
-);
+export const LOCAL_STORAGE = new InjectionToken<Storage>('window local storage object', {
+  providedIn: 'root',
+  factory: () => {
+    return inject(PLATFORM_ID) === 'browser' ? window.localStorage : ({} as Storage);
+  },
+});
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +23,7 @@ export class StorageService {
 
   loadChecklistItems() {
     const checklistsItems = this.storage.getItem('checklistItems');
-    return of(
-      checklistsItems ? (JSON.parse(checklistsItems) as ChecklistItem[]) : []
-    );
+    return of(checklistsItems ? (JSON.parse(checklistsItems) as ChecklistItem[]) : []);
   }
 
   saveChecklists(checklists: Checklist[]) {

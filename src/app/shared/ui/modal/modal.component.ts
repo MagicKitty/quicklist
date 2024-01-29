@@ -1,17 +1,15 @@
 import { Component, ContentChild, inject, Input, TemplateRef } from '@angular/core';
-import { Dialog } from "@angular/cdk/dialog";
-import { FormModalComponent } from "../form-modal/form-modal.component";
+import { Dialog } from '@angular/cdk/dialog';
+import { FormModalComponent } from '../form-modal/form-modal.component';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [
-    FormModalComponent
-  ],
+  imports: [FormModalComponent],
   template: `
     <div></div>
   `,
-  styles: [``]
+  styles: [``],
 })
 export class ModalComponent {
   dialog = inject(Dialog);
