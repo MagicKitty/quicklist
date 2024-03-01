@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { KeyValuePipe, TitleCasePipe } from '@angular/common';
 
@@ -6,18 +6,19 @@ import { KeyValuePipe, TitleCasePipe } from '@angular/common';
   selector: 'app-form-modal',
   standalone: true,
   imports: [ReactiveFormsModule, KeyValuePipe, TitleCasePipe],
+
   template: `
     <header class="flex justify-between">
-      <h2>{{ title }}</h2>
-      <button class="p-4 font-semibold" (click)="close.emit()">X</button>
+      <h2>{{ title() }}</h2>
+      <button class="p-4 font-semibold" (click)="closed.emit()">X</button>
     </header>
     <section>
       <form
         class="flex flex-col gap-4"
-        [formGroup]="formGroup"
-        (ngSubmit)="save.emit(); close.emit()"
+        [formGroup]="formGroup()"
+        (ngSubmit)="save.emit(); closed.emit()"
       >
-        @for (control of formGroup.controls | keyvalue; track control.key) {
+        @for (control of formGroup().controls | keyvalue; track control.key) {
           <div class="flex gap-2 items-center">
             <label [for]="control.key">{{ control.key | titlecase }}</label>
             <input
@@ -35,8 +36,8 @@ import { KeyValuePipe, TitleCasePipe } from '@angular/common';
   styles: [``],
 })
 export class FormModalComponent {
-  @Input({ required: true }) formGroup!: FormGroup;
-  @Input({ required: true }) title!: string;
+  formGroup = input.required<FormGroup>();
+  title = input.required<string>();
   @Output() save = new EventEmitter<void>();
-  @Output() close = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
 }

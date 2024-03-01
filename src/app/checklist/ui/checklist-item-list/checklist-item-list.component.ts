@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { ChecklistItem, RemoveChecklistItem } from '../../../shared/models/checklist-item';
 
 @Component({
   standalone: true,
   selector: 'app-checklist-item-list',
+
   template: `
     <section>
       <ul>
-        @for (item of checklistItems; track item.id) {
+        @for (item of checklistItems(); track item.id) {
           <li>
             <div>
               @if (item.checked) {
@@ -28,13 +29,13 @@ import { ChecklistItem, RemoveChecklistItem } from '../../../shared/models/check
           </div>
         }
       </ul>
-      <div>{{ checkedItems }}/{{ checklistItems.length }} complete</div>
+      <div>{{ checkedItems() }}/{{ checklistItems().length }} complete</div>
     </section>
   `,
 })
 export class ChecklistItemListComponent {
-  @Input({ required: true }) checklistItems!: ChecklistItem[];
-  @Input({ required: true }) checkedItems!: number;
+  checklistItems = input.required<ChecklistItem[]>();
+  checkedItems = input.required<number>();
   @Output() toggle = new EventEmitter<RemoveChecklistItem>();
   @Output() delete = new EventEmitter<RemoveChecklistItem>();
   @Output() edit = new EventEmitter<ChecklistItem>();

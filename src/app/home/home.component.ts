@@ -1,9 +1,9 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { ModalComponent } from '../shared/ui/modal/modal.component';
-import { Checklist } from '../shared/models/checklist';
 import { FormBuilder } from '@angular/forms';
-import { FormModalComponent } from '../shared/ui/form-modal/form-modal.component';
 import { ChecklistService } from '../shared/data-access/checklist.service';
+import { Checklist } from '../shared/models/checklist';
+import { FormModalComponent } from '../shared/ui/form-modal/form-modal.component';
+import { ModalComponent } from '../shared/ui/modal/modal.component';
 import { ChecklistListComponent } from './ui/checklist-list/checklist-list.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { ChecklistListComponent } from './ui/checklist-list/checklist-list.compo
   template: `
     <header>
       <h1 class="text-2xl leading-10">Quicklists</h1>
-      <button class="px-4 py-2 border-2 rounded" (click)="checklistBeingEdited?.set({})">
+      <button class="px-4 py-2 border-2 rounded" (click)="checklistBeingEdited.set({})">
         Add Checklist
       </button>
     </header>
@@ -23,7 +23,7 @@ import { ChecklistListComponent } from './ui/checklist-list/checklist-list.compo
         <app-form-modal
           [title]="checklistBeingEdited()?.title ? checklistBeingEdited()!.title! : 'Add Checklist'"
           [formGroup]="checklistForm"
-          (close)="checklistBeingEdited.set(null)"
+          (closed)="checklistBeingEdited.set(null)"
           (save)="
             checklistBeingEdited()?.id
               ? checklistService.edit$.next({

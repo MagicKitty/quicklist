@@ -52,7 +52,7 @@ import { ChecklistItemListComponent } from './ui/checklist-item-list/checklist-i
                   checklistId: checklist()?.id!
                 })
           "
-          (close)="checklistItemBeingEdited.set(null)"
+          (closed)="checklistItemBeingEdited.set(null)"
         ></app-form-modal>
       </ng-template>
     </app-modal>

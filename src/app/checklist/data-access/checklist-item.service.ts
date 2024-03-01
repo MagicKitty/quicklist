@@ -1,18 +1,19 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { connect } from 'ngxtension/connect';
+import { map, merge, Subject } from 'rxjs';
+import { StorageService } from '../../shared/data-access/storage.service';
+import { RemoveChecklist } from '../../shared/models/checklist';
 import {
   AddChecklistItem,
   ChecklistItem,
   EditChecklistItem,
   RemoveChecklistItem,
 } from '../../shared/models/checklist-item';
-import { Subject } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StorageService } from '../../shared/data-access/storage.service';
-import { RemoveChecklist } from '../../shared/models/checklist';
 
 export type ChecklistItemsState = {
   checklistItems: ChecklistItem[];
   loaded: boolean;
+  error: string | null;
 };
 
 @Injectable({
@@ -27,6 +28,7 @@ export class ChecklistItemService {
   private state = signal<ChecklistItemsState>({
     checklistItems: [],
     loaded: false,
+    error: null,
   });
 
   // selectors
@@ -40,34 +42,29 @@ export class ChecklistItemService {
   edit$ = new Subject<EditChecklistItem>();
   remove$ = new Subject<RemoveChecklistItem>();
   checklistRemoved$ = new Subject<RemoveChecklist>();
+  private error$ = new Subject<string>();
 
   constructor() {
-    this.checklistRemoved$.pipe(takeUntilDestroyed()).subscribe((checklistId) =>
-      this.state.update((state) => ({
-        ...state,
-        checklistItems: state.checklistItems.filter((item) => item.checklistId !== checklistId),
-      })),
+    // reducers
+    const nextState$ = merge(
+      this.checklistItemsLoaded$.pipe(map((items) => ({ items, loaded: true }))),
+      this.error$.pipe(map((error) => ({ error }))),
     );
 
-    this.edit$.pipe(takeUntilDestroyed()).subscribe((checklistItem) =>
-      this.state.update((state) => ({
-        ...state,
+    connect(this.state)
+      .with(nextState$)
+      .with(this.checklistRemoved$, (state, checklistId) => ({
+        checklistItems: state.checklistItems.filter((item) => item.checklistId !== checklistId),
+      }))
+      .with(this.edit$, (state, checklistItem) => ({
         checklistItems: state.checklistItems.map((item) =>
           item.id === checklistItem.id ? { ...item, title: checklistItem.data.title } : item,
         ),
-      })),
-    );
-
-    this.remove$.pipe(takeUntilDestroyed()).subscribe((id) =>
-      this.state.update((state) => ({
-        ...state,
+      }))
+      .with(this.remove$, (state, id) => ({
         checklistItems: state.checklistItems.filter((item) => item.id !== id),
-      })),
-    );
-
-    this.add$.pipe(takeUntilDestroyed()).subscribe((checklistItem) =>
-      this.state.update((state) => ({
-        ...state,
+      }))
+      .with(this.add$, (state, checklistItem) => ({
         checklistItems: [
           ...state.checklistItems,
           {
@@ -77,36 +74,17 @@ export class ChecklistItemService {
             checked: false,
           },
         ],
-      })),
-    );
-
-    this.toggle$.pipe(takeUntilDestroyed()).subscribe((checklistItemId) =>
-      this.state.update((state) => ({
-        ...state,
+      }))
+      .with(this.toggle$, (state, checklistItemId) => ({
         checklistItems: state.checklistItems.map((item) =>
           item.id === checklistItemId ? { ...item, checked: !item.checked } : item,
         ),
-      })),
-    );
-
-    this.reset$.pipe(takeUntilDestroyed()).subscribe((checklistId) =>
-      this.state.update((state) => ({
-        ...state,
+      }))
+      .with(this.reset$, (state, checklistId) => ({
         checklistItems: state.checklistItems.map((item) =>
           item.checklistId === checklistId ? { ...item, checked: false } : item,
         ),
-      })),
-    );
-
-    this.checklistItemsLoaded$.pipe(takeUntilDestroyed()).subscribe({
-      next: (items) =>
-        this.state.update((state) => ({
-          ...state,
-          items,
-          loaded: true,
-        })),
-      error: (err) => this.state.update((state) => ({ ...state, error: err })),
-    });
+      }));
 
     // effects
     effect(() => {

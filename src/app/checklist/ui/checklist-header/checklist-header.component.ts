@@ -1,18 +1,20 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Checklist, RemoveChecklist } from '../../../shared/models/checklist';
+import { input } from '@angular/core';
 
 @Component({
   standalone: true,
   selector: 'app-checklist-header',
+
   template: `
     <header>
       <a routerLink="/home">Back</a>
       <h1>
-        {{ checklist.title }}
+        {{ checklist().title }}
       </h1>
       <div>
-        <button (click)="resetChecklist.emit(checklist.id)">Reset</button>
+        <button (click)="resetChecklist.emit(checklist().id)">Reset</button>
         <button (click)="addItem.emit()">Add item</button>
       </div>
     </header>
@@ -20,7 +22,7 @@ import { Checklist, RemoveChecklist } from '../../../shared/models/checklist';
   imports: [RouterLink],
 })
 export class ChecklistHeaderComponent {
-  @Input({ required: true }) checklist!: Checklist;
+  checklist = input.required<Checklist>();
   @Output() addItem = new EventEmitter<void>();
   @Output() resetChecklist = new EventEmitter<RemoveChecklist>();
 }

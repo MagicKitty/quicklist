@@ -1,6 +1,7 @@
 import { Component, ContentChild, inject, Input, TemplateRef } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { FormModalComponent } from '../form-modal/form-modal.component';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
